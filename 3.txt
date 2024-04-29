@@ -1,0 +1,80 @@
+-- 3
+
+Create TABLE Driver(driver_id int primary key,driver_name varchar(20),address varchar(20));
+
+select * from Driver;
+insert into Driver values(1,"Raj","Lakho");
+insert into Driver values(2,"MR.Ram","bihar");
+insert into Driver values(3,"kishan","Punjab");
+insert into Driver values(4,"Shyam","maharastra");
+insert into Driver values(5,"MR.Ram","Goa");
+select * from Driver;
+
+create table Car(license_no varchar(20) primary key,model varchar(20), year int);
+insert into Car values("AP1234","Toyota",1998);
+insert into Car values("BH2243","BMW",1999);
+insert into Car values("CU7546","ALTO",2001);
+insert into Car values("DPU123","swift",2002);
+insert into Car values("GH6573","Mahindra",2003);
+select * from Car;
+
+
+CREATE TABLE Driver_Car(
+    driver_id INT,
+    license_no VARCHAR(20),
+    drive_date DATE,
+    drive_time TIME,
+    FOREIGN KEY (driver_id) REFERENCES Driver(driver_id),
+    FOREIGN KEY (license_no) REFERENCES Car(license_no),
+    PRIMARY KEY (driver_id, license_no, drive_date, drive_time)
+);
+
+insert into Driver_Car values(1,"AP1234",'1998-01-01','01:01:01');
+insert into Driver_Car values(2,"BH2243",'1999-02-02','02:02:02');
+insert into Driver_Car values(3,"CU7546",'2000-03-03','03:03:03');
+insert into Driver_Car values(4,"DPU123",'2001-04-04','04:04:04');
+insert into Driver_Car values(5,"GH6573",'1999-02-02','05:05:05');
+select * from Driver_Car;
+
+--   Q1.  Display the name of the driver whose license no is 'DPU123':
+
+select driver_name from Driver
+join Driver_Car on Driver.driver_id = Driver_Car.driver_id
+where license_no = 'DPU123';
+
+-- Q2. Delete the details of the car whose model is 'swift':
+
+create table Car_all(license_no varchar(20) primary key,model varchar(20), year int);
+insert into Car_all values("DPU123","Toyota",1998);
+insert into Car_all values("UP2203","BMW",1999);
+insert into Car_all values("RH2203","ALTO",2000);
+insert into Car_all values("KR2134","swift",2001);
+insert into Car_all values("PB8922","Mahindra",2002);
+select * from Car_all;
+Delete from car_all where model = "swift";
+select* from car_all;
+
+
+-- Q3.Display details of all persons who are driving the 'ALTO' car:
+select Distinct Driver.*
+from Driver 
+join Driver_Car on Driver.driver_id = Driver_Car.driver_id
+join Car on driver_car.license_no = car.license_no
+where car.model = "ALTO"
+
+
+-- Q4. Display car details manufactured before the year 2000:
+select * from Car where year < 2000;
+
+-- q5. in which day does 'Mr. Ram' drive the maximum number of cars?
+
+SELECT drive_date, COUNT(*) AS num_cars_driven 
+FROM Driver 
+JOIN Driver_Car ON Driver.driver_id = Driver_Car.driver_id 
+WHERE driver_name = 'MR.Ram' 
+GROUP BY drive_date 
+ORDER BY num_cars_driven DESC 
+LIMIT 1;
+
+
+ 
